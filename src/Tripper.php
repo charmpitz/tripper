@@ -2,6 +2,7 @@
 class Tripper {
 
 	public $tracker_type;
+	public $tracker_options;
 	public $tracker_credentials;
 	public $search_type;
 	public $search_options;
@@ -13,6 +14,7 @@ class Tripper {
 	public function __construct($array) {
 		$this->options = $array['options'];
 		$this->tracker_type = $array['tracker']['type'];
+		$this->tracker_options = $array['tracker']['options'];
 		$this->credentials = $array['tracker']['credentials'];
 		$this->search_type = $array['search']['type'];
 		$this->search_options = $array['search']['options'];
@@ -33,7 +35,7 @@ class Tripper {
 			$search_name = $this->search_options['custom_search_name'];
 
 		// Get Tracker result data
-		$tracker = TrackerFactory::build($this->tracker_type, $this->credentials, $search_name);
+		$tracker = TrackerFactory::build($this->tracker_type, $this->credentials, $this->tracker_options, $search_name);
 
 		$tracker->connect();
 
