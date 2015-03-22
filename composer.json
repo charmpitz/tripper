@@ -1,0 +1,13 @@
+{
+    "name": "charmpitz/Tripper",
+    "require": {
+        "sunra/php-simple-html-dom-parser": "~1.5",
+        "amphp/artax": "dev-master"
+    },
+    "authors": [
+        {
+            "name": "charmpitz",
+            "email": "charmpitz@gmail.com"
+        }
+    ]
+}
