@@ -1,6 +1,11 @@
 # Tripper
 PHP class that connects to given Trackers, searches for torrents and adds them into your favorite Torrent Downloader.
 
+Currently supported trackers:
+- http://www.filelist.ro
+- https://freshon.tv
+
+
 ```php
 $freshon = 
 new Tripper(
