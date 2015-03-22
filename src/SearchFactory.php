@@ -18,12 +18,14 @@ class Search_Series {
 	public $query;
 	public $resolution;
 	public $torrents;
+	public $ripper;
 
 	public function __construct($options, $torrents) {
 
-		$this->name = $options['name'];
+		$this->name = str_replace(' ', '.', $options['name']);
 		$this->query = $options['query'];
 		$this->resolution = $options['resolution'];
+		$this->ripper = $options['ripper'];
 		$this->torrents = $torrents;
 	}
 
@@ -74,7 +76,6 @@ class Search_Series {
 			else
 			{
 				// Single torrent
-
 				if (preg_match("/S([0-9]{2})E([0-9]{1,2})/i", $query, $aux))
 				{
 					$season = intval($aux[1]);
@@ -88,19 +89,29 @@ class Search_Series {
 				}
 			}
 
-			$new = array();
+			$list = array();
+			$episode_list = array();
+			$season_list = array();
+
+			// Preparing regex
+			$regex = "/".$this->name.".(S([0-9]{2})E([0-9]{1,2})?|S([0-9]{2})).*";
+
+			if (!empty($this->resolution))
+				$regex .= "(".$this->resolution.")+.*";
+			
+			if (!empty($this->ripper))
+				$regex .= "-(".$this->ripper.")+.*";
+
+			$regex .= "/i";
+
 			foreach($this->torrents as $element)
 			{
-				if (!empty($this->resolution))
-					$regex = "/".$this->name.".(S([0-9]{2})E([0-9]{1,2})?|S([0-9]{2})).*(".$this->resolution.")+.*/i";
-				else
-					$regex = "/".$this->name.".(S([0-9]{2})E([0-9]{1,2})?|S([0-9]{2})).*/i";
-
 				if (preg_match($regex, $element['name'], $out) > 0)
 				{
 					$current_season = intval($out[2]);
 					$current_episode = intval($out[3]);
 					$full_season = intval($out[4]);
+
 
 					// Store the torrents in a smart way
 					if (!empty($current_episode))
@@ -116,6 +127,7 @@ class Search_Series {
 
 			if ($multiple)
 			{
+
 				// Start Case
 				if (in_array($episode_start, array(0, 1)))
 				{
@@ -123,7 +135,7 @@ class Search_Series {
 					if (!empty($season_list[$season_start]))
 					{
 						// Add the season to the list
-						$new[] = $this->choose($season_list[$season_start]);
+						$list[] = $this->choose($season_list[$season_start]);
 					}
 				}
 				else
@@ -134,7 +146,7 @@ class Search_Series {
 						$arg = $season_start.($i < 10 ? "0" : "").$i;
 						if (!empty($episode_list[$arg]))
 						{
-							$new[] = $this->choose($episode_list[$arg]);
+							$list[] = $this->choose($episode_list[$arg]);
 						}
 					}
 				}
@@ -142,7 +154,7 @@ class Search_Series {
 				// Middle Case
 				for ($i=$season_start+1;$i<$season_end;$i++)
 				{
-					$new[] = $this->choose($season_list[$i]);
+					$list[] = $this->choose($season_list[$i]);
 				}
 
 				// End Case
@@ -150,7 +162,7 @@ class Search_Series {
 				if ((is_null($episode_list[intval($arg)+1])) && (!is_null($season_list[$season_end])))
 				{
 					// Add the season to the list
-					$new[] = $this->choose($season_list[$season_end]);
+					$list[] = $this->choose($season_list[$season_end]);
 				}
 				else
 				{
@@ -160,23 +172,24 @@ class Search_Series {
 						$arg = $season_end.($i < 10 ? "0" : "").$i;
 						if (!empty($episode_list[$arg]))
 						{
-							$new[] = $this->choose($episode_list[$arg]);
+							$list[] = $this->choose($episode_list[$arg]);
 						}
 					}
 				}
 			}
 			else
 			{
-				$new[] = is_numeric($episode) ? $this->choose($episode_list[$season.($episode < 10 ? "0" : "").$episode]) : $this->choose($season_list[$season]);
+				$list[] = is_numeric($episode) ? $this->choose($episode_list[$season.($episode < 10 ? "0" : "").$episode]) : $this->choose($season_list[$season]);
 			}
 
 		}
-
-		$this->torrents = $new;
+		$this->torrents = $list;
 	}
 
 	public function search() {
 		$this->filter();
+
+		$result = array();
 
 		// Add the .torrent extension
 		foreach ($this->torrents as $key => $torrent) {
@@ -195,47 +208,48 @@ class Search_Movies {
 	public $resolution;
 	public $quality;
 	public $number_of_results = 1;
+	public $ripper;
 	public $torrents;
 
-	public function __construct($args, $torrents) {
+	public function __construct($options, $torrents) {
 
-		$this->name = $args['name'];
-		$this->year = $args['year'];
-		$this->resolution = $args['resolution'];
-		$this->quality = $args['quality'];
-		$this->number_of_results = $args['number_of_results'];
-
+		$this->name = str_replace(' ', '.', $options['name']);
+		$this->year = $options['year'];
+		$this->resolution = $options['resolution'];
+		$this->quality = $options['quality'];
+		$this->number_of_results = $options['number_of_results'];
+		$this->ripper = $options['ripper'];
 		$this->torrents = $torrents;
 	}
 
 	protected function filter() {
 		if (!empty($this->year))
 		{
-			$year = $this->year;
-
-			$new = array();
+			$list = array();
 			$count = 0;
+
+			$regex0 = "/.*".$this->name.".*/i";
+			$regex1 = "/.*".$this->year.".*/i";
+			$regex2 = "/.*".$this->resolution.".*/i";
+			$regex3 = "/.*".$this->quality.".*/i";
+			$regex4 = "/.*".$this->ripper.".*/i";
 
 			foreach($this->torrents as $element)
 			{
-				if (!empty($this->resolution))
-					$regex = "/".$this->name.".". $this->year .".*".$this->resolution.".*/";
-				else
-					$regex = "/".$this->name.".". $this->year .".*/";
-
-				$regex2 = "/.*".$this->quality.".*/";
-
-				if ((preg_match($regex, $element['name'], $out) > 0) && (preg_match($regex2, $element['name']) > 0))
+				if ((preg_match($regex0, $element['name']) > 0) && 
+					(preg_match($regex1, $element['name']) > 0) &&
+					(preg_match($regex2, $element['name']) > 0) &&
+					(preg_match($regex3, $element['name']) > 0) &&
+					(preg_match($regex4, $element['name']) > 0))
 				{
-					$new[] = $element;
+					$list[] = $element;
 					$count++;
 				}
 				if ($count == $this->number_of_results) break;
 			}
 
 		}
-		$this->torrents = $new;
-		print_r($new);
+		$this->torrents = $list;
 	}
 
 	public function search() {
