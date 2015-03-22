@@ -2,12 +2,12 @@
 use Sunra\PhpSimple\HtmlDomParser;
 
 class TrackerFactory {
-	public static function build($type, $credentials, $search_name)
+	public static function build($type, $credentials, $options, $search_name)
   	{
 	    $tracker = "Tracker_" . ucwords($type);
 
 	    if (class_exists($tracker))
-	    	return new $tracker($credentials, $search_name);
+	    	return new $tracker($credentials, $options, $search_name);
 	    else 
 	    	throw new Exception("Invalid tracker type given.");
   	}
@@ -33,9 +33,10 @@ abstract class TrackerGeneral {
 	protected $agent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5';
 	protected $curl_handler;
 
-	public function __construct($credentials, $search_name = '') {
+	public function __construct($credentials, $options, $search_name = '') {
 		$this->username = $credentials['username'];
 		$this->password = $credentials['password'];
+		$this->options = $options;
 		$this->search_name = $search_name;
 	}
 
@@ -70,21 +71,26 @@ abstract class TrackerGeneral {
 		if (empty($links))
 			return false;
 
+		$paths = array();
+
 		// Get file data
 		foreach ($links as $link) {
-			curl_setopt($this->curl_handler, CURLOPT_URL, $link['href']);
-			$data 	= curl_exec($this->curl_handler);
+			if (!empty($link['href']))
+			{
+				curl_setopt($this->curl_handler, CURLOPT_URL, $link['href']);
+				$data 	= curl_exec($this->curl_handler);
 
-			if (!$path)
-			{
-				$temp_name = tempnam($path, 'Tripper');
-				file_put_contents($temp_name, $data);
-				$paths[] = $temp_name;
-			}
-			else
-			{
-				file_put_contents($path.$link['name'], $data);
-				$paths[] = $path . $link['name'];
+				if (!$path)
+				{
+					$temp_name = tempnam($path, 'Tripper');
+					file_put_contents($temp_name, $data);
+					$paths[] = $temp_name;
+				}
+				else
+				{
+					file_put_contents($path.$link['name'], $data);
+					$paths[] = $path . $link['name'];
+				}
 			}
 		}
 
@@ -127,7 +133,20 @@ class Tracker_FreshonTv extends TrackerGeneral {
 
 	public $domain = "https://freshon.tv";
 	public $login_url = "https://freshon.tv/login.php?action=makelogin";
-	public $search_url = "https://freshon.tv/browse.php?tab=hd&search=";
+	public $search_url = "https://freshon.tv/browse.php?search=";
+
+	public function __construct($credentials, $options, $search_name = '') {
+
+		// Execute parent __construct
+		$args = func_get_args();
+		call_user_func_array(array($this, 'parent::__construct'), $args);
+
+		// Add tab=hd to the search link
+		if ($this->options['hd_only'])
+		{
+			$this->search_url = "https://freshon.tv/browse.php?tab=hd&search=";
+		}
+	}
 
 	protected function parseHtml($html) {
 		$dom = HtmlDomParser::str_get_html($html);
