@@ -24,12 +24,12 @@ class Search_Series {
 		$this->name = $options['name'];
 		$this->query = $options['query'];
 		$this->resolution = $options['resolution'];
-
 		$this->torrents = $torrents;
 	}
 
+	// Choosing the best match
 	protected function choose($array) {
-
+		return $array[0];
 	}
 
 	protected function filter() {
@@ -123,7 +123,7 @@ class Search_Series {
 					if (!empty($season_list[$season_start]))
 					{
 						// Add the season to the list
-						$new[] = $season_list[$season_start][0];
+						$new[] = $this->choose($season_list[$season_start]);
 					}
 				}
 				else
@@ -134,7 +134,7 @@ class Search_Series {
 						$arg = $season_start.($i < 10 ? "0" : "").$i;
 						if (!empty($episode_list[$arg]))
 						{
-							$new[] = $episode_list[$arg][0];
+							$new[] = $this->choose($episode_list[$arg]);
 						}
 					}
 				}
@@ -142,7 +142,7 @@ class Search_Series {
 				// Middle Case
 				for ($i=$season_start+1;$i<$season_end;$i++)
 				{
-					$new[] = $season_list[$i][0];
+					$new[] = $this->choose($season_list[$i]);
 				}
 
 				// End Case
@@ -150,7 +150,7 @@ class Search_Series {
 				if ((is_null($episode_list[intval($arg)+1])) && (!is_null($season_list[$season_end])))
 				{
 					// Add the season to the list
-					$new[] = $season_list[$season_end][0];
+					$new[] = $this->choose($season_list[$season_end]);
 				}
 				else
 				{
@@ -160,14 +160,14 @@ class Search_Series {
 						$arg = $season_end.($i < 10 ? "0" : "").$i;
 						if (!empty($episode_list[$arg]))
 						{
-							$new[] = $episode_list[$arg][0];
+							$new[] = $this->choose($episode_list[$arg]);
 						}
 					}
 				}
 			}
 			else
 			{
-				$new[] = is_numeric($episode) ? $episode_list[$season.($episode < 10 ? "0" : "").$episode][0] : $season_list[$season][0];
+				$new[] = is_numeric($episode) ? $this->choose($episode_list[$season.($episode < 10 ? "0" : "").$episode]) : $this->choose($season_list[$season]);
 			}
 
 		}
