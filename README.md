@@ -29,6 +29,9 @@ new Tripper(
         'tracker' => array(
         	// FreshonTv, Filelist
             'type' => 'FreshonTv',
+            'options' => array(
+                'hd_only' => true
+            ),
             'credentials' => array(
                 'username' => '',
                 'password' => ''
@@ -40,6 +43,7 @@ new Tripper(
                 'name' => 'Supernatural',
                 'query' => 'S07-S10E04',
                 'resolution' => '480p|720p|1080p',
+                // 'ripper' => 'NTb|DIMENSION|LOL|2HD|TvT|KiNGS|W4F|DEMAND|SAiNTS|CtrlHD|ECI',
                 // 'custom_search_name' => '',
             )
         ),
@@ -66,7 +70,7 @@ $filelist =
 new Tripper(
     array(
         'tracker' => array(
-            'type' => 'Filelist',
+            'type' => 'Filelist'
             'credentials' => array(
                 'username' => '',
                 'password' => ''
@@ -75,11 +79,12 @@ new Tripper(
         'search' => array(
             'type' => 'Movies',
             'options' => array(
-                'name'              => 'Shawshank.Redemption',
-			    'year'              => '1994',
-			    'resolution'        => '720p|1080p|480p',
-			    'quality'           => 'Bluray|BluRay|BRRip|DVDRip|DVD5.PAL',
-			    'number_of_results' => 3
+                'name' => 'Shawshank Redemption',
+                'year' => '1994',
+                'resolution' => '720p', // |1080p|480p
+                'quality' => 'Bluray', // |BluRay|BRRip|DVDRip|DVD5.PAL
+                // 'ripper' => 'NTb|DIMENSION|LOL|2HD|TvT|KiNGS|W4F|DEMAND|SAiNTS|CtrlHD|ECI',
+                'number_of_results' => 1
             )
         ),
         'client' => array(
