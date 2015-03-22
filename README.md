@@ -1,6 +1,14 @@
 # Tripper
 PHP class that connects to given Trackers, searches for torrents and adds them into your favorite Torrent Downloader.
 
+
+### Installation
+To use this class you will need to do
+```
+$ git clone https://github.com/charmpitz/Tripper.git
+$ composer.phar install
+```
+
 Currently supported trackers:
 - http://filelist.ro
 - https://freshon.tv
@@ -12,6 +20,8 @@ Currently supported searches:
 Currently supported Torrent apps:
 - QBittorrent
 
+
+### Usage
 ```php
 $freshon = 
 new Tripper(
@@ -50,6 +60,8 @@ new Tripper(
     )
 );
 
+$freshon->execute();
+
 $filelist = 
 new Tripper(
     array(
@@ -87,6 +99,6 @@ new Tripper(
     )
 );
 
-$freshon->execute();
+$filelist->execute();
 ```
 
