@@ -18,6 +18,7 @@ class Search_Series {
 	public $query;
 	public $resolution;
 	public $torrents;
+	public $ripper;
 
 	public function __construct($options, $torrents) {
 
@@ -207,6 +208,7 @@ class Search_Movies {
 	public $resolution;
 	public $quality;
 	public $number_of_results = 1;
+	public $ripper;
 	public $torrents;
 
 	public function __construct($options, $torrents) {
