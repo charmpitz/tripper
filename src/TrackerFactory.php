@@ -150,7 +150,7 @@ class Tracker_FreshonTv extends TrackerGeneral {
 
 	protected function parseHtml($html) {
 		$dom = HtmlDomParser::str_get_html($html);
-
+		$data = array();
 		// Search for the anchors
 		$elements = $dom->find("a.torrent_name_link");
 
