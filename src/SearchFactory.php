@@ -94,12 +94,12 @@ class Search_Series {
 			$season_list = array();
 
 			// Preparing regex
-			$regex = "/".$this->name.".(S([0-9]{2})E([0-9]{1,2})?|S([0-9]{2})).*";
+			$regex = "/^".$this->name.".(S([0-9]{2})E([0-9]{1,2})?|S([0-9]{2})).*";
 
-			if (!empty($this->resolution))
+			if (isset($this->resolution))
 				$regex .= "(".$this->resolution.")+.*";
 			
-			if (!empty($this->ripper))
+			if (isset($this->ripper))
 				$regex .= "-(".$this->ripper.")+.*";
 
 			$regex .= "/i";
@@ -114,7 +114,7 @@ class Search_Series {
 
 
 					// Store the torrents in a smart way
-					if (!empty($current_episode))
+					if ($current_episode)
 					{
 						$episode_list[$current_season.($current_episode < 10 ? "0" : "").$current_episode][] = $element;
 					}
@@ -127,12 +127,11 @@ class Search_Series {
 
 			if ($multiple)
 			{
-
 				// Start Case
 				if (in_array($episode_start, array(0, 1)))
 				{
 					// Check if the season torrent exist
-					if (!empty($season_list[$season_start]))
+					if (isset($season_list[$season_start]))
 					{
 						// Add the season to the list
 						$list[] = $this->choose($season_list[$season_start]);
@@ -144,7 +143,7 @@ class Search_Series {
 					for ($i=$episode_start;$i<=99;$i++)
 					{
 						$arg = $season_start.($i < 10 ? "0" : "").$i;
-						if (!empty($episode_list[$arg]))
+						if (isset($episode_list[$arg]))
 						{
 							$list[] = $this->choose($episode_list[$arg]);
 						}
@@ -154,12 +153,26 @@ class Search_Series {
 				// Middle Case
 				for ($i=$season_start+1;$i<$season_end;$i++)
 				{
-					$list[] = $this->choose($season_list[$i]);
+					if (isset($season_list[$i]))
+					{
+						$list[] = $this->choose($season_list[$i]);
+					}
+					else
+					{
+						for ($j=0;$j<=99;$j++)
+						{
+							$arg = $i.($j < 10 ? "0" : "").$j;
+							if (isset($episode_list[$arg]))
+							{
+								$list[] = $this->choose($episode_list[$arg]);
+							}
+						}
+					}
 				}
 
 				// End Case
 				$arg = $season_end.($episode_end < 10 ? "0" : "").$episode_end;
-				if ((is_null($episode_list[intval($arg)+1])) && (!is_null($season_list[$season_end])))
+				if ((!isset($episode_list[intval($arg)+1])) && (isset($season_list[$season_end])))
 				{
 					// Add the season to the list
 					$list[] = $this->choose($season_list[$season_end]);
