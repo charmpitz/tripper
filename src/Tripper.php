@@ -4,22 +4,29 @@ class Tripper {
 	public $tracker_type;
 	public $tracker_options;
 	public $tracker_credentials;
+
 	public $search_type;
 	public $search_options;
+
 	public $client_type;
 	public $client_options;
+
 	public $options;
 	public $result;
 
 	public function __construct($array) {
-		$this->options = $array['options'];
-		$this->tracker_type = $array['tracker']['type'];
+		$this->options         = $array['options'];
+
+		$this->tracker_type    = $array['tracker']['type'];
 		$this->tracker_options = $array['tracker']['options'];
-		$this->credentials = $array['tracker']['credentials'];
-		$this->search_type = $array['search']['type'];
-		$this->search_options = $array['search']['options'];
-		$this->client_type = $array['client']['type'];
-		$this->client_options = $array['client']['options'];
+
+		$this->tracker_credentials = $array['tracker']['credentials'];
+
+		$this->search_type     = $array['search']['type'];
+		$this->search_options  = $array['search']['options'];
+
+		$this->client_type     = $array['client']['type'];
+		$this->client_options  = $array['client']['options'];
 	}
 
 	public function setOptions($options) {
@@ -29,13 +36,15 @@ class Tripper {
 	public function execute() {
 
 		// Configure a custom search on the tracker if set
-		if (!isset($search_options['custom_search_name']))
+		if (!isset($search_options['custom_search_name'])) {
 			$search_name = $this->search_options['name'];
-		else
+		}
+		else {
 			$search_name = $this->search_options['custom_search_name'];
+		}
 
 		// Get Tracker result data
-		$tracker = TrackerFactory::build($this->tracker_type, $this->credentials, $this->tracker_options, $search_name);
+		$tracker = TrackerFactory::build($this->tracker_type, $this->tracker_credentials, $this->tracker_options, $search_name);
 
 		$tracker->connect();
 
@@ -44,7 +53,8 @@ class Tripper {
 		// Search through the data
 		$search = SearchFactory::build($this->search_type, $this->search_options, $torrents);
 		$this->result = $search->search();
-
+		printf(json_encode($this->result));
+		die;
 		// Download the results
 		if ($this->options['download'])
 		{

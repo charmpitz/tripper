@@ -97,7 +97,7 @@ abstract class TrackerGeneral {
 		return $paths;
 	}
 
-	public function getData ($url) {
+	public function getData($url) {
 
 		// Get file data
 		curl_setopt($this->curl_handler, CURLOPT_URL, $url);
@@ -131,8 +131,8 @@ abstract class TrackerGeneral {
 
 class Tracker_FreshonTv extends TrackerGeneral {
 
-	public $domain = "https://freshon.tv";
-	public $login_url = "https://freshon.tv/login.php?action=makelogin";
+	public $domain     = "https://freshon.tv";
+	public $login_url  = "https://freshon.tv/login.php?action=makelogin";
 	public $search_url = "https://freshon.tv/browse.php?search=";
 
 	public function __construct($credentials, $options, $search_name = '') {

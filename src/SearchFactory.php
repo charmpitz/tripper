@@ -22,11 +22,11 @@ class Search_Series {
 
 	public function __construct($options, $torrents) {
 
-		$this->name = str_replace(' ', '.', $options['name']);
-		$this->query = $options['query'];
+		$this->name       = str_replace(' ', '.', $options['name']);
+		$this->query      = $options['query'];
 		$this->resolution = $options['resolution'];
-		$this->ripper = $options['ripper'];
-		$this->torrents = $torrents;
+		$this->ripper     = $options['ripper'];
+		$this->torrents   = $torrents;
 	}
 
 	// Choosing the best match
@@ -226,13 +226,13 @@ class Search_Movies {
 
 	public function __construct($options, $torrents) {
 
-		$this->name = str_replace(' ', '.', $options['name']);
-		$this->year = $options['year'];
-		$this->resolution = $options['resolution'];
-		$this->quality = $options['quality'];
+		$this->name              = str_replace(' ', '.', $options['name']);
+		$this->year              = $options['year'];
+		$this->resolution        = $options['resolution'];
+		$this->quality           = $options['quality'];
 		$this->number_of_results = $options['number_of_results'];
-		$this->ripper = $options['ripper'];
-		$this->torrents = $torrents;
+		$this->ripper            = $options['ripper'];
+		$this->torrents          = $torrents;
 	}
 
 	protected function filter() {
