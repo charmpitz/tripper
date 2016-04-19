@@ -1,0 +1,18 @@
+{
+    "name": "charmpitz/tripper",
+    "description": "Torrent scraper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrei Pit",
+            "email": "charmpitz@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Charmpitz\\": "src/"
+        }
+    }
+}
