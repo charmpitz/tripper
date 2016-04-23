@@ -6,5 +6,12 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'charmpitz\\Tripper\\' => array($baseDir . '/src'),
+    'LibDNS\\' => array($vendorDir . '/daverandom/libdns/src'),
+    'Charmpitz\\' => array($baseDir . '/src'),
+    'Amp\\Socket\\' => array($vendorDir . '/amphp/socket/lib'),
+    'Amp\\File\\' => array($vendorDir . '/amphp/file/lib'),
+    'Amp\\Dns\\' => array($vendorDir . '/amphp/dns/lib'),
+    'Amp\\Cache\\' => array($vendorDir . '/amphp/cache/lib'),
+    'Amp\\Artax\\' => array($vendorDir . '/amphp/artax/lib'),
+    'Amp\\' => array($vendorDir . '/amphp/amp/lib'),
 );

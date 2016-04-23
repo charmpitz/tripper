@@ -5,7 +5,7 @@ namespace Charmpitz;
 class Tripper
 {
     /**
-     * Contains the tracker
+     * Contains the data
      */
     private $data = [];
 
@@ -13,11 +13,6 @@ class Tripper
      * Contains the tracker
      */
     private $tracker = null;
-
-    /**
-     * Contains the client
-     */
-    private $client = null;
 
     /**
      * Contains the tracker
@@ -30,13 +25,9 @@ class Tripper
         if (!empty($this->data['tracker'])) {
             $this->tracker = TrackerFactory::build($this->data['tracker']);
         }
-        
-        if (!empty($this->data['client'])) {
-            $this->client  = ClientFactory::build($this->data['client']);
-        }
 
-        if (!empty($this->data['query'])) {
-            $this->query   = new Query($this->data['query']);
+        if (!empty($this->data['query']['data']['name'])) {
+            $this->tracker->setSearchName($this->data['query']['data']['name']);
         }
     }
 
@@ -44,24 +35,19 @@ class Tripper
         $this->tracker = TrackerFactory::build($trackerData);
     }
 
-    public function setClient($clientData) {
-        $this->client = ClientFactory::build($clientData);
-    }
-
-    public function setQuery($queryData) {
-        $this->query   = new Query($queryData);
-    }
-
     public function execute() {
         if (empty($this->tracker)) {
-            throw new Exception("No tracker specified.");
+            throw new \Exception("No tracker specified.");
         }
 
-        if (empty($this->query)) {
-            throw new Exception("No query specified.");
-        }
-
+        $this->tracker->connect();
         $results = $this->tracker->execute($this->query);
+        
+        if ($this->data['options']['download']) {
+            $this->tracker->download($results, $this->data['options']['download_path']);
+        }
+
+        $this->tracker->disconnect();
 
         return $results;
     }

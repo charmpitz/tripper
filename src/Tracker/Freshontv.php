@@ -1,12 +1,14 @@
 <?php 
 
-namespace Charmpitz;
+namespace Charmpitz\Tracker;
+
+use \Sunra\PhpSimple\HtmlDomParser;
 
 class Freshontv extends TrackerAbstract implements TrackerInterface {
 
-    public $domain    = "https://freshon.tv";
-    public $loginUrl  = "https://freshon.tv/login.php?action=makelogin";
-    public $searchUrl = "https://freshon.tv/browse.php?search={search}";
+    protected $domain     = "https://freshon.tv";
+    protected $loginUrl   = "https://freshon.tv/login.php?action=makelogin";
+    protected $searchUrl  = "https://freshon.tv/browse.php?search=";
 
     protected function parseHtml($html) {
         $dom  = HtmlDomParser::str_get_html($html);

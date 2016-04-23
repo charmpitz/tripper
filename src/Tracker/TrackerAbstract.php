@@ -1,19 +1,22 @@
 <?php 
 
-namespace Charmpitz;
+namespace Charmpitz\Tracker;
 
-abstract class AbstractTracker {
+use \Sunra\PhpSimple\HtmlDomParser;
+
+abstract class TrackerAbstract {
 
     protected $username;
     protected $password;
+    
+    protected $domain     = '';
+    protected $loginUrl   = '';
+    protected $searchUrl  = '';
 
-    protected $domain    = '';
-    protected $loginUrl  = '';
-    protected $searchUrl = '';
+    protected $searchName = '';
 
     public $html;
     public $torrents;
-    public $searchName;
 
     protected $userAgent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5';
     protected $curlHandler;
@@ -23,11 +26,8 @@ abstract class AbstractTracker {
         $this->password = $credentials['password'];
     }
 
-    public function execute() {
-        $html = $this->getHtml();
-        $data = $this->parseHtml($html);
-
-        return $data;
+    public function setSearchName($name) {
+        $this->searchName = $name;
     }
 
     public function connect() {
@@ -44,6 +44,31 @@ abstract class AbstractTracker {
         $store = curl_exec($this->curlHandler);
 
         return $store;
+    }
+
+    public function execute() {
+        $html = $this->getHtml();
+        $data = $this->parseHtml($html);
+
+        return $data;
+    }
+
+    protected function getHtml($path = '') {
+
+        if (!empty($path)) {
+            return file_get_contents($path);
+        }
+
+        $html = $this->getData($this->searchUrl.urlencode($this->searchName));
+
+        $dom      = HtmlDomParser::str_get_html($html);
+        $elements = $dom->find("a[href*='&page=']");
+
+        foreach($elements as $a) {
+            $html .= $this->getData($a->href);
+            output($a->href);
+        }
+        return $html;
     }
 
     public function disconnect() {
@@ -65,7 +90,7 @@ abstract class AbstractTracker {
                 if (!$path) {
                     $fileName = tempnam($path, 'Tripper');
                 } else {
-                    $fileName = $path . $link['name'];
+                    $fileName = $path . $link['name'] . '.torrent';
                 }
 
                 file_put_contents($fileName, $data);
@@ -79,6 +104,8 @@ abstract class AbstractTracker {
     public function getData($url) {
         # Get file data
         curl_setopt($this->curlHandler, CURLOPT_URL, $url);
-        return curl_exec($this->curlHandler);
+        $data   = curl_exec($this->curlHandler);
+
+        return $data;
     }
 }

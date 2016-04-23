@@ -1,18 +1,20 @@
-<?php 
-include "../vendor/autoload.php";
+<?php
+include ("../vendor/autoload.php");
+
+use Charmpitz\Tripper;
 
 $freshon = new Tripper([
     'tracker' => [
         // FreshonTv, Filelist
-        'type'        => 'FreshonTv',
+        'type'        => 'Freshontv',
         'credentials' => [
             'username' => 'armpitz',
             'password' => 'laptop100'
         ]
     ],
     'query' => [
-        'type'    => 'Series',
-        'options' => [
+        'type' => 'Series',
+        'data' => [
             'name'       => 'Supernatural',
             'query'      => 'S07-S11E04',
             'resolution' => '480p|720p|1080p',
@@ -20,7 +22,7 @@ $freshon = new Tripper([
             // 'custom_search_name' => '',
         ]
     ],
-    'client' => [
+    /*'client' => [
         'type'    => 'QBittorrent',
         'options' => [
             'host'     => 'http://localhost:8080',
@@ -28,12 +30,13 @@ $freshon = new Tripper([
             'username' => '',
             'password' => '',
         ],
-    ],
+    ],*/
     'options' => [
         'download'       => true,
         'download_path'  => "./torrents/",
         'send_to_client' => false
     ]
 ]);
+
 
 $freshon->execute();

@@ -9,7 +9,10 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "sunra/php-simple-html-dom-parser": "~1.5",
+        "amphp/artax": "dev-master"
+    },
     "autoload": {
         "psr-4": {
             "Charmpitz\\": "src/"
